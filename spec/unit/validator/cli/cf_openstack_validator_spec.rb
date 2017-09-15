@@ -59,11 +59,12 @@ module Validator::Cli
      end
 
     describe '#deep_extract_release' do
-      it 'extracts the release and its packages' do
+      it 'extracts the release and its packages and jobs' do
         subject.deep_extract_release(expand_project_path('spec/assets/cpi-release.tgz'))
 
         expect(File.exists?(File.join(working_dir, 'cpi-release/packages/bosh_openstack_cpi/bosh_openstack_cpi/dummy_bosh_openstack_cpi'))).to be(true)
         expect(File.exists?(File.join(working_dir, 'cpi-release/packages/ruby_openstack_cpi/ruby_openstack_cpi/dummy_ruby_openstack_cpi'))).to be(true)
+        # expect(File.exists?(File.join(working_dir, 'cpi-release/jobs/openstack_cpi/templates/cpi.erb'))).to be(true)
       end
     end
 

@@ -269,21 +269,28 @@ module Validator::Cli
     end
 
     def render_cpi_executable
-      cpi_content = <<EOF
-#!/usr/bin/env bash
+#       cpi_content = <<EOF
+# #!/usr/bin/env bash
+#
+# BOSH_PACKAGES_DIR=\${BOSH_PACKAGES_DIR:-#{@context.packages_path}}
+#
+# PATH=\$BOSH_PACKAGES_DIR/ruby_openstack_cpi/bin:\$PATH
+# export PATH
+# export HOME=~
+#
+# export BUNDLE_GEMFILE=\$BOSH_PACKAGES_DIR/bosh_openstack_cpi/Gemfile
+#
+# bundle_cmd="\$BOSH_PACKAGES_DIR/ruby_openstack_cpi/bin/bundle"
+# read -r INPUT
+# echo \$INPUT | \$bundle_cmd exec \$BOSH_PACKAGES_DIR/bosh_openstack_cpi/bin/openstack_cpi #{File.join(@context.working_dir, 'cpi.json')}
+# EOF
 
-BOSH_PACKAGES_DIR=\${BOSH_PACKAGES_DIR:-#{@context.packages_path}}
 
-PATH=\$BOSH_PACKAGES_DIR/ruby_openstack_cpi/bin:\$PATH
-export PATH
-export HOME=~
+      cpi_erb = File.read(File.join(@context.extracted_cpi_release_dir, 'jobs', 'openstack_cpi', 'templates', 'cpi.erb'))
+      erb = ERB.new(cpi_erb, safe_level = nil, trim_mode = '-')
+      context = Bosh::Template::EvaluationContext.new({'properties' => {'env' => {'http_proxy' => 'test'}}}, nil)
+      cpi_content = erb.result(context.get_binding)
 
-export BUNDLE_GEMFILE=\$BOSH_PACKAGES_DIR/bosh_openstack_cpi/Gemfile
-
-bundle_cmd="\$BOSH_PACKAGES_DIR/ruby_openstack_cpi/bin/bundle"
-read -r INPUT
-echo \$INPUT | \$bundle_cmd exec \$BOSH_PACKAGES_DIR/bosh_openstack_cpi/bin/openstack_cpi #{File.join(@context.working_dir, 'cpi.json')}
-EOF
       File.write(@context.cpi_bin_path, cpi_content)
       FileUtils.chmod('+x', @context.cpi_bin_path)
     end
