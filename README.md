@@ -52,11 +52,11 @@ The intended place to run the validator is a VM within your OpenStack. If you ar
 * `cd cf-openstack-validator`
 * Copy the generated private key into the `cf-openstack-validator` folder.
 * Copy [validator.template.yml](validator.template.yml) to `validator.yml` and replace occurrences of `<replace-me>` with appropriate values (see prerequisites)
-  * If using Keystone v3, ensure there are values for `domain` and `project`
-  * If using Keystone v2, remove `domain` and `project`, and ensure there is a value for `tenant`. Also use the Keystone v2 URL as `auth_url`.
   ```bash
    $ cp validator.template.yml validator.yml
    ```
+  * If using Keystone v3, ensure there are values for `domain` and `project`
+  * If using Keystone v2, remove `domain` and `project`, and ensure there is a value for `tenant`. Also use the Keystone v2 URL as `auth_url`.
 * Download a stemcell from [OpenStack stemcells bosh.io](https://bosh.io/stemcells/bosh-openstack-kvm-ubuntu-trusty-go_agent)
   ```
   $ curl -L -J -O https://bosh.io/d/stemcells/bosh-openstack-kvm-ubuntu-trusty-go_agent
